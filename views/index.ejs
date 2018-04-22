@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel='stylesheet' href='/style.css'>
+    <title>chat</title>
+</head>
+<body>
+    <div>
+
+        <div><h1>Chat on WebSocket</h1></div>
+
+        <div><h2 id='h3'>OFFLINE</h2></div>
+
+        <div><input type='text' name='message' id='message' class='buttons'></div>
+
+        <div><input type='submit' id='submit' value='SUBMIT' class='buttons'><input type='button' id='reset' value=' RESET ' class='buttons'></div>
+       
+
+        <div id='div'></div>
+
+        <script>
+        'use strict';
+
+        var message = document.getElementById('message');
+        var submit = document.getElementById('submit');
+        var reset = document.getElementById('reset');
+        // var reset = document.getElementById('reset');
+        var h3 = document.getElementById('h3');
+        var div = document.getElementById('div');
+
+        var ws = new WebSocket('ws://localhost:3000');
+
+
+
+        function print (data) {
+            var p = document.createElement('p');
+            p.innerHTML = data;
+            div.append(p);
+        };
+
+        function status (data) {
+            h3.innerHTML = data;
+        };
+
+        submit.addEventListener('click', () => {
+            ws.send(message.value);
+            message.value = '';
+        });
+
+        reset.addEventListener('click', () => {
+            div.innerHTML = '';
+        });
+
+        ws.onopen = () => {
+            status('Online');
+        };
+
+        ws.onmessage = (response) => {
+            print(response.data);
+        };
+
+        ws.onclose = () => {
+            print('Disconnected')
+        };
+
+
+            
+        </script>
+
+    </div>
+</body>
+</html>
